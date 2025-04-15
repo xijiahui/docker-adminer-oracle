@@ -10,7 +10,7 @@ namespace docker {
 					$return = \Adminer::loginForm();
 					$form = ob_get_clean();
 
-					$filePath = "/usr/local/oracle/instantclient_19_23/network/admin/tnsnames.ora";
+					$filePath = "/usr/local/oracle/instantclient_19_26/network/admin/tnsnames.ora";
 					if (file_exists($filePath) && is_file($filePath)) {
 						$pattern = '/<select name=\'auth\[driver\]\'>.*?<\/select>/s';
 						$replacement = '<select name=\'auth[driver]\'><option value="oracle" selected> Oracle    (beta) </select>';
@@ -46,7 +46,7 @@ namespace docker {
 }
 
 namespace {
-	if (basename($_SERVER['DOCUMENT_URI']) === 'adminer.css' && is_readable('adminer.css')) {
+	if (basename($_SERVER['DOCUMENT_URI'] ?? $_SERVER['REQUEST_URI']) === 'adminer.css' && is_readable('adminer.css')) {
 		header('Content-Type: text/css');
 		readfile('adminer.css');
 		exit;
