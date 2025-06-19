@@ -13,7 +13,7 @@ namespace docker {
 				return (function (...$args) {
 					$field = $this->loginFormField(...$args);
 
-                    $filePath = "/usr/local/oracle/instantclient_19_26/network/admin/tnsnames.ora";
+                    $filePath = "/usr/local/oracle/instantclient_19_27/network/admin/tnsnames.ora";
                     if (file_exists($filePath) && is_file($filePath)) {
                         $pattern = '/<select name=\'auth\[driver\]\'>.*?<\/select>/s';
                         $replacement = '<select name=\'auth[driver]\'><option value="oracle" selected> Oracle    (beta) </select>';

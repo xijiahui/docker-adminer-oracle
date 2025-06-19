@@ -17,7 +17,7 @@ done
 
 touch .adminer-init || true
 
-if [[ ! -f /usr/local/oracle/instantclient_19_26/network/admin/tnsnames.ora ]]; then
+if [[ ! -f /usr/local/oracle/instantclient_19_27/network/admin/tnsnames.ora ]]; then
     if [ -n "$ORACLE_SID" ] && [ -n "$ORACLE_HOST" ] && [ -n "$ORACLE_PORT" ]; then
         echo "$ORACLE_SID= 
 (DESCRIPTION = 
@@ -26,7 +26,7 @@ if [[ ! -f /usr/local/oracle/instantclient_19_26/network/admin/tnsnames.ora ]]; 
     (SERVER = DEDICATED)
     (SERVICE_NAME = $ORACLE_SID)
   )
-)" >> /usr/local/oracle/instantclient_19_26/network/admin/tnsnames.ora
+)" >> /usr/local/oracle/instantclient_19_27/network/admin/tnsnames.ora
     fi
 fi
 
