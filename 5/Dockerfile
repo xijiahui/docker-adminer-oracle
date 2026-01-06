@@ -80,9 +80,9 @@ RUN apk update && apk upgrade --available && \
 RUN \
 ## Download and unarchive Instant Client v19.29
   mkdir            /usr/local/oracle && \
-  curl -o          /tmp/sdk.zip            https://download.oracle.com/otn_software/linux/instantclient/1927000/instantclient-sdk-linux.x64-19.27.0.0.0dbru.zip && \
-  curl -o          /tmp/basic_lite.zip     https://download.oracle.com/otn_software/linux/instantclient/1927000/instantclient-basiclite-linux.x64-19.27.0.0.0dbru.zip && \
-# curl -o          /tmp/sqlplus.zip        https://download.oracle.com/otn_software/linux/instantclient/1927000/instantclient-sqlplus-linux.x64-19.27.0.0.0dbru.zip && \
+  curl -o          /tmp/sdk.zip            https://download.oracle.com/otn_software/linux/instantclient/1929000/instantclient-sdk-linux.x64-19.29.0.0.0dbru.zip && \
+  curl -o          /tmp/basic_lite.zip     https://download.oracle.com/otn_software/linux/instantclient/1929000/instantclient-basiclite-linux.x64-19.29.0.0.0dbru.zip && \
+# curl -o          /tmp/sqlplus.zip        https://download.oracle.com/otn_software/linux/instantclient/1929000/instantclient-sqlplus-linux.x64-19.29.0.0.0dbru.zip && \
   unzip -o -d      /usr/local/oracle       /tmp/sdk.zip && \
   unzip -o -d      /usr/local/oracle       /tmp/basic_lite.zip  && \
 # unzip -o -d      /usr/local/oracle       /tmp/sqlplus.zip && \
