@@ -1,4 +1,4 @@
-FROM php:8.3-alpine
+FROM php:8.4-alpine
 
 RUN	echo "upload_max_filesize = 128M" >> /usr/local/etc/php/conf.d/0-upload_large_dumps.ini \
 &&	echo "post_max_size = 128M" >> /usr/local/etc/php/conf.d/0-upload_large_dumps.ini \
@@ -40,9 +40,9 @@ RUN	set -x \
 
 COPY	*.php /var/www/html/
 
-ENV	ADMINER_VERSION=5.3.0
-ENV	ADMINER_DOWNLOAD_SHA256=7dcc196e941b18b74635afe1740dcd86970ab08b8eba0f00f149925aea3972ed
-ENV	ADMINER_SRC_DOWNLOAD_SHA256=b929336214ab94583dc35e7d492879d1de6e3ab75888a2ad2c86166651f2c6d8
+ENV	ADMINER_VERSION=5.4.1
+ENV	ADMINER_DOWNLOAD_SHA256=3f65364b4cc96b5e4cae1b3e448b7b6fa42b0da1eeba78bed9b3774ade830fce
+ENV	ADMINER_SRC_DOWNLOAD_SHA256=fd96585b1f8728b729551c5a7de3371724c1ccd701afde4c75fd6b990d935a63
 
 RUN	set -x \
 &&	curl -fsSL https://github.com/vrana/adminer/releases/download/v$ADMINER_VERSION/adminer-$ADMINER_VERSION.php -o adminer.php \
@@ -64,9 +64,9 @@ EXPOSE 8080
 USER root
 
 ENV ORACLE_BASE     /usr/local/oracle
-ENV LD_LIBRARY_PATH /usr/local/oracle/instantclient_19_27:/lib
-ENV TNS_ADMIN       /usr/local/oracle/instantclient_19_27/network/admin
-ENV ORACLE_HOME     /usr/local/oracle/instantclient_19_27
+ENV LD_LIBRARY_PATH /usr/local/oracle/instantclient_19_29:/lib
+ENV TNS_ADMIN       /usr/local/oracle/instantclient_19_29/network/admin
+ENV ORACLE_HOME     /usr/local/oracle/instantclient_19_29
 
 RUN apk update && apk upgrade --available && \
   apk add --no-cache bash autoconf build-base composer libaio libnsl libc6-compat busybox-extras curl && \
@@ -78,7 +78,7 @@ RUN apk update && apk upgrade --available && \
 
 # # Install Oracle Client and build OCI8 (Oracle Command Interface 8 - PHP extension)
 RUN \
-## Download and unarchive Instant Client v19.27
+## Download and unarchive Instant Client v19.29
   mkdir            /usr/local/oracle && \
   curl -o          /tmp/sdk.zip            https://download.oracle.com/otn_software/linux/instantclient/1927000/instantclient-sdk-linux.x64-19.27.0.0.0dbru.zip && \
   curl -o          /tmp/basic_lite.zip     https://download.oracle.com/otn_software/linux/instantclient/1927000/instantclient-basiclite-linux.x64-19.27.0.0.0dbru.zip && \
@@ -86,16 +86,16 @@ RUN \
   unzip -o -d      /usr/local/oracle       /tmp/sdk.zip && \
   unzip -o -d      /usr/local/oracle       /tmp/basic_lite.zip  && \
 # unzip -o -d      /usr/local/oracle       /tmp/sqlplus.zip && \
-  chown adminer:adminer /usr/local/oracle/instantclient_19_27/network/admin && \
+  chown adminer:adminer /usr/local/oracle/instantclient_19_29/network/admin && \
   rm -rf           /tmp/*.zip && \
   mkdir            /etc/php.d && \
   echo "extension=oci8.so" > /etc/php.d/instantclient.ini
 
 ## Build OCI8 with PECL
 RUN \
-  C_INCLUDE_PATH=/usr/local/oracle/instantclient_19_27/sdk/include/ docker-php-ext-configure oci8       --with-oci8=instantclient,/usr/local/oracle/instantclient_19_27 && \
+  C_INCLUDE_PATH=/usr/local/oracle/instantclient_19_29/sdk/include/ docker-php-ext-configure oci8       --with-oci8=instantclient,/usr/local/oracle/instantclient_19_29 && \
   docker-php-ext-install oci8 && \
-  C_INCLUDE_PATH=/usr/local/oracle/instantclient_19_27/sdk/include/ docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr/local/oracle/instantclient_19_27 && \
+  C_INCLUDE_PATH=/usr/local/oracle/instantclient_19_29/sdk/include/ docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr/local/oracle/instantclient_19_29 && \
   docker-php-ext-install pdo_oci 
 
 #  Clean up
