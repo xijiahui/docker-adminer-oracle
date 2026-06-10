@@ -13,26 +13,26 @@ namespace docker {
 				return (function (...$args): string {
 					$field = $this->loginFormField(...$args);
 
-                    $filePath = "/usr/local/oracle/instantclient_19_30/network/admin/tnsnames.ora";
-                    if (file_exists($filePath) && is_file($filePath)) {
-                        $pattern = '/<select name=\'auth\[driver\]\'>.*?<\/select>/s';
-                        $replacement = '<select name=\'auth[driver]\'><option value="oracle" selected> Oracle    (beta) </select>';
-                        $field = preg_replace($pattern, $replacement, $field);
+					$filePath = "/usr/local/oracle/instantclient_19_30/network/admin/tnsnames.ora";
+					if (file_exists($filePath) && is_file($filePath)) {
+						$pattern = '/<select name=\'auth\[driver\]\'>.*?<\/select>/s';
+						$replacement = '<select name=\'auth[driver]\'><option value="oracle" selected> Oracle    (beta) </select>';
+						$field = preg_replace($pattern, $replacement, $field);
 
-                        $pattern = '/name="auth\[db\]"\s+value="[^"]*"/';
-                        $replacement = 'name="auth[db]" value="" readonly';
-                        $field = preg_replace($pattern, $replacement, $field);
-                    }
+						$pattern = '/name="auth\[db\]"\s+value="[^"]*"/';
+						$replacement = 'name="auth[db]" value="" readonly';
+						$field = preg_replace($pattern, $replacement, $field);
+					}
 
 					return \preg_replace_callback(
-                    	'/name="auth\[server\]" value="" title="(?:[^"]+)"/',
-                    	static function (array $matches): string {
-                    	    return \str_replace(
-                    		    'value=""',
-                    			\sprintf('value="%s"', ($_ENV['ORACLE_SID'] ?? ($_ENV['ADMINER_DEFAULT_SERVER'] ?: 'db'))),
-                    			$matches[0],
-                    		);
-                    	},
+						'/name="auth\[server\]" value="" title="(?:[^"]+)"/',
+						static function (array $matches): string {
+							return \str_replace(
+								'value=""',
+								\sprintf('value="%s"', ($_ENV['ORACLE_SID'] ?? ($_ENV['ADMINER_DEFAULT_SERVER'] ?: 'db'))),
+								$matches[0],
+							);
+						},
 						$field,
 					);
 				})->call($this->adminer, ...$args);
