@@ -9,11 +9,11 @@ namespace docker {
 				private \Adminer\Adminer $adminer
 			) { }
 
-			public function loginFormField(...$args) {
-				return (function (...$args) {
+			public function loginFormField(...$args): string {
+				return (function (...$args): string {
 					$field = $this->loginFormField(...$args);
 
-                    $filePath = "/usr/local/oracle/instantclient_19_29/network/admin/tnsnames.ora";
+                    $filePath = "/usr/local/oracle/instantclient_19_30/network/admin/tnsnames.ora";
                     if (file_exists($filePath) && is_file($filePath)) {
                         $pattern = '/<select name=\'auth\[driver\]\'>.*?<\/select>/s';
                         $replacement = '<select name=\'auth[driver]\'><option value="oracle" selected> Oracle    (beta) </select>';
@@ -30,9 +30,15 @@ namespace docker {
                         }
                     }
 
-					return \str_replace(
-						'name="auth[server]" value="" title="hostname[:port]"',
-						\sprintf('name="auth[server]" value="%s" title="hostname[:port]"', ($_ENV['ADMINER_DEFAULT_SERVER'] ?: 'db')),
+					return \preg_replace_callback(
+                    	'/name="auth\[server\]" value="" title="(?:[^"]+)"/',
+                    	static function (array $matches): string {
+                    	    return \str_replace(
+                    		    'value=""',
+                    			\sprintf('value="%s"', ($_ENV['ADMINER_DEFAULT_SERVER'] ?: 'db')),
+                    			$matches[0],
+                    		);
+                    	},
 						$field,
 					);
 				})->call($this->adminer, ...$args);

@@ -40,9 +40,9 @@ RUN	set -x \
 
 COPY	*.php /var/www/html/
 
-ENV	ADMINER_VERSION=5.4.1
-ENV	ADMINER_DOWNLOAD_SHA256=3f65364b4cc96b5e4cae1b3e448b7b6fa42b0da1eeba78bed9b3774ade830fce
-ENV	ADMINER_SRC_DOWNLOAD_SHA256=fd96585b1f8728b729551c5a7de3371724c1ccd701afde4c75fd6b990d935a63
+ENV	ADMINER_VERSION=5.4.2
+ENV	ADMINER_DOWNLOAD_SHA256=5b761efe7049bf586119256324fd417b49e5bb9243b40d9734fe86655e4402fd
+ENV	ADMINER_SRC_DOWNLOAD_SHA256=a4106d61bc81575d0b45c762105eead064384643418cad197a3257677625bd10
 
 RUN	set -x \
 &&	curl -fsSL https://github.com/vrana/adminer/releases/download/v$ADMINER_VERSION/adminer-$ADMINER_VERSION.php -o adminer.php \
@@ -64,9 +64,9 @@ EXPOSE 8080
 USER root
 
 ENV ORACLE_BASE     /usr/local/oracle
-ENV LD_LIBRARY_PATH /usr/local/oracle/instantclient_19_29:/lib
-ENV TNS_ADMIN       /usr/local/oracle/instantclient_19_29/network/admin
-ENV ORACLE_HOME     /usr/local/oracle/instantclient_19_29
+ENV LD_LIBRARY_PATH /usr/local/oracle/instantclient_19_30:/lib
+ENV TNS_ADMIN       /usr/local/oracle/instantclient_19_30/network/admin
+ENV ORACLE_HOME     /usr/local/oracle/instantclient_19_30
 
 RUN apk update && apk upgrade --available && \
   apk add --no-cache bash autoconf build-base composer libaio libnsl libc6-compat busybox-extras curl && \
@@ -78,24 +78,24 @@ RUN apk update && apk upgrade --available && \
 
 # # Install Oracle Client and build OCI8 (Oracle Command Interface 8 - PHP extension)
 RUN \
-## Download and unarchive Instant Client v19.29
+## Download and unarchive Instant Client v19.30
   mkdir            /usr/local/oracle && \
-  curl -o          /tmp/sdk.zip            https://download.oracle.com/otn_software/linux/instantclient/1929000/instantclient-sdk-linux.x64-19.29.0.0.0dbru.zip && \
-  curl -o          /tmp/basic_lite.zip     https://download.oracle.com/otn_software/linux/instantclient/1929000/instantclient-basiclite-linux.x64-19.29.0.0.0dbru.zip && \
-# curl -o          /tmp/sqlplus.zip        https://download.oracle.com/otn_software/linux/instantclient/1929000/instantclient-sqlplus-linux.x64-19.29.0.0.0dbru.zip && \
+  curl -o          /tmp/sdk.zip            https://download.oracle.com/otn_software/linux/instantclient/1930000/instantclient-sdk-linux.x64-19.30.0.0.0dbru.zip && \
+  curl -o          /tmp/basic_lite.zip     https://download.oracle.com/otn_software/linux/instantclient/1930000/instantclient-basiclite-linux.x64-19.30.0.0.0dbru.zip && \
+# curl -o          /tmp/sqlplus.zip        https://download.oracle.com/otn_software/linux/instantclient/1930000/instantclient-sqlplus-linux.x64-19.30.0.0.0dbru.zip && \
   unzip -o -d      /usr/local/oracle       /tmp/sdk.zip && \
   unzip -o -d      /usr/local/oracle       /tmp/basic_lite.zip  && \
 # unzip -o -d      /usr/local/oracle       /tmp/sqlplus.zip && \
-  chown adminer:adminer /usr/local/oracle/instantclient_19_29/network/admin && \
+  chown adminer:adminer /usr/local/oracle/instantclient_19_30/network/admin && \
   rm -rf           /tmp/*.zip && \
   mkdir            /etc/php.d && \
   echo "extension=oci8.so" > /etc/php.d/instantclient.ini
 
 ## Build OCI8 with PECL
 RUN \
-  C_INCLUDE_PATH=/usr/local/oracle/instantclient_19_29/sdk/include/ docker-php-ext-configure oci8       --with-oci8=instantclient,/usr/local/oracle/instantclient_19_29 && \
+  C_INCLUDE_PATH=/usr/local/oracle/instantclient_19_30/sdk/include/ docker-php-ext-configure oci8       --with-oci8=instantclient,/usr/local/oracle/instantclient_19_30 && \
   docker-php-ext-install oci8 && \
-  C_INCLUDE_PATH=/usr/local/oracle/instantclient_19_29/sdk/include/ docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr/local/oracle/instantclient_19_29 && \
+  C_INCLUDE_PATH=/usr/local/oracle/instantclient_19_30/sdk/include/ docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/usr/local/oracle/instantclient_19_30 && \
   docker-php-ext-install pdo_oci 
 
 #  Clean up
