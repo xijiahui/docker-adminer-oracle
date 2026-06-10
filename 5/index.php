@@ -24,18 +24,12 @@ namespace docker {
                         $field = preg_replace($pattern, $replacement, $field);
                     }
 
-                    if (!empty($_ENV['ORACLE_SID'])) {
-                        if (preg_match('/name="auth\[server\]"[^>]*title="hostname\[:port\]"/', $field, $matches)) {
-                            $field = str_replace($matches[0], 'name="auth[server]" value="'.($_ENV['ORACLE_SID']).'" readonly title="hostname[:port]"', $field);
-                        }
-                    }
-
 					return \preg_replace_callback(
                     	'/name="auth\[server\]" value="" title="(?:[^"]+)"/',
                     	static function (array $matches): string {
                     	    return \str_replace(
                     		    'value=""',
-                    			\sprintf('value="%s"', ($_ENV['ADMINER_DEFAULT_SERVER'] ?: 'db')),
+                    			\sprintf('value="%s"', ($_ENV['ORACLE_SID'] ?? ($_ENV['ADMINER_DEFAULT_SERVER'] ?: 'db'))),
                     			$matches[0],
                     		);
                     	},
